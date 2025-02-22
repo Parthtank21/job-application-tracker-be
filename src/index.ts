@@ -1,15 +1,21 @@
-import cors from "cors";
-import express, { Express, Request, Response } from "express";
+import "express-async-errors";
+import dotenv from "dotenv";
 
-const app: Express = express();
+import app from "./app";
+import logger from "./utils/logger.utils";
 
-app.use(cors());
-app.use(express.json());
+dotenv.config();
 
-app.get("/api/v1/healthcheck", (req: Request, res: Response) => {
-  res.status(200).json({ message: "Application is running" });
-});
+const port = process.env.PORT || 3001;
 
-app.listen(3001, () => {
-  console.log("App is running on port 3001");
-});
+const start = async () => {
+  try {
+    app.listen(port, () =>
+      logger.info(`Server is listening on port ${port}...`)
+    );
+  } catch (error) {
+    logger.error(error);
+  }
+};
+
+start();
