@@ -1,6 +1,7 @@
 import cors from "cors";
 import express, { Express } from "express";
 
+import userRouter from "./features/user/user.routes";
 import healthcheckRouter from "./features/healthcheck/healthcheck.routes";
 
 import {
@@ -19,6 +20,7 @@ app.use(morganMiddleware);
 
 // routes
 app.use("/api/v1/healthcheck", healthcheckRouter);
+app.use("/api/v1/user", userRouter);
 
 // middlerwares
 app.use(notFoundMiddleware);

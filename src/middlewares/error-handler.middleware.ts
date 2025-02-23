@@ -33,7 +33,7 @@ const errorHandlerMiddleware = (
 
   if (err.name === "CastError") {
     customError.statusCode = StatusCodes.NOT_FOUND;
-    customError.msg = `No item found with id: ${err.value}`;
+    customError.msg = `Please provide valid ID`;
   }
 
   if (err.code && err.code === 11000) {
