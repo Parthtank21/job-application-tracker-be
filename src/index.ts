@@ -1,11 +1,9 @@
 import "express-async-errors";
-import dotenv from "dotenv";
+import 'dotenv/config'
 
 import app from "./app";
 import logger from "./utils/logger.utils";
 import connectDb from "./utils/db.utils";
-
-dotenv.config();
 
 const port = process.env.PORT || 3001;
 const dbUri = process.env.MONGO_URI as string;

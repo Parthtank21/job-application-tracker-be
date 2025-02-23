@@ -5,6 +5,11 @@ export const createUser = async (input: UserInput) => {
   return user;
 };
 
+export const getUserByEmail = async (email: string) => {
+  const user = await User.findOne({ email }).lean();
+  return user;
+};
+
 export const getSingleUser = async (userId: string) => {
   const user = await User.findById(userId).lean().select("-password");
   return user;
