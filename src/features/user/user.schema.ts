@@ -19,18 +19,22 @@ const payload = {
     })
     .email("Please enter valid email"),
   mobile: z
-    .string()
-    .min(6, "Please enter valid number")
-    .max(12, "Please enter valid number")
+    .union([
+      z.string().regex(/^\d{6,12}$/, "Please enter valid number"),
+      z.string().length(0),
+    ])
     .optional(),
 };
 
 const createUserPayload = {
   body: z.object({
     ...payload,
-    password: z.string({
-      required_error: "Password is required",
-    }),
+    password: z
+      .string({
+        required_error: "Password is required",
+      })
+      .trim()
+      .min(1, "Password is required"),
     isUser: z.boolean().optional(),
     isAdmin: z.boolean().optional(),
     emailVerified: z.boolean({
@@ -42,7 +46,10 @@ const createUserPayload = {
 const updateUserPayload = {
   body: z.object({
     ...payload,
-    password: z.string({ required_error: "Password is required" }).optional(),
+    password: z
+      .string({ required_error: "Password is required" })
+      .trim()
+      .optional(),
   }),
 };
 
@@ -59,16 +66,16 @@ export const createUserSchema = z.object({
 });
 
 export const getUserSchema = z.object({
-  ...params,
+  // ...params,
 });
 
 export const updateUserSchema = z.object({
-  ...params,
+  // ...params,
   ...updateUserPayload,
 });
 
 export const deleteUserSchema = z.object({
-  ...params,
+  // ...params,
 });
 
 export type CreateUserDto = z.infer<typeof createUserSchema>;

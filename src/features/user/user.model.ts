@@ -15,7 +15,7 @@ export interface UpdateUserInput {
   firstName: string;
   lastName: string;
   email: string;
-  mobile?: string;
+  mobile?: String;
   password?: string;
 }
 

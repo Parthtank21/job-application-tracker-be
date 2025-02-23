@@ -7,9 +7,12 @@ const payload = {
         required_error: "Email is required",
       })
       .email("Please enter valid email"),
-    password: z.string({
-      required_error: "Password is required",
-    }),
+    password: z
+      .string({
+        required_error: "Password is required",
+      })
+      .trim()
+      .min(1, "Password is required"),
   }),
 };
 

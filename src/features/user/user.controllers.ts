@@ -1,43 +1,19 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
-import {
-  CreateUserDto,
-  DeleteUserDto,
-  GetUserDto,
-  UpdateUserDto,
-} from "./user.schema";
-import {
-  createUser,
-  deleteUser,
-  getSingleUser,
-  updateUser,
-} from "./user.services";
+
 import { hash } from "../../utils/hash.utils";
+import { UpdateUserDto } from "./user.schema";
 import sendResponse from "../../utils/api-response";
-import { NotFoundError } from "../../errors";
+import { NotFoundError, UnauthenticatedError } from "../../errors";
+import { deleteUser, getSingleUser, updateUser } from "./user.services";
 
-export const createUserHandler = async (
-  req: Request<{}, {}, CreateUserDto["body"]>,
-  res: Response
-) => {
-  const { password, ...rest } = req.body;
-  const hashedPassword = await hash(password, false);
-  const newUser = await createUser({ ...rest, password: hashedPassword });
+export const getUserHandler = async (req: Request, res: Response) => {
+  const userId = req.user?.userId;
+  if (!userId) {
+    throw new UnauthenticatedError("Authentication failed");
+  }
 
-  sendResponse({
-    res,
-    statusCode: StatusCodes.CREATED,
-    message: "User registered successfully",
-  });
-};
-
-export const getUserHandler = async (
-  req: Request<GetUserDto["params"]>,
-  res: Response
-) => {
-  const userId = req.params.id;
   const user = await getSingleUser(userId);
-
   if (!user) {
     throw new NotFoundError(`User not found`);
   }
@@ -51,11 +27,14 @@ export const getUserHandler = async (
 };
 
 export const updateUserHandler = async (
-  req: Request<UpdateUserDto["params"], {}, UpdateUserDto["body"]>,
+  req: Request<{}, {}, UpdateUserDto["body"]>,
   res: Response
 ) => {
-  const userId = req.params.id;
+  const userId = req.user?.userId;
   const updatedData = req.body;
+  if (!userId) {
+    throw new UnauthenticatedError("Authentication failed");
+  }
 
   if (req.body.password) {
     const { password } = req.body;
@@ -64,7 +43,6 @@ export const updateUserHandler = async (
   }
 
   const user = await updateUser(userId, updatedData);
-
   if (!user) {
     throw new NotFoundError(`User not found`);
   }
@@ -77,13 +55,13 @@ export const updateUserHandler = async (
   });
 };
 
-export const deleteUserHandler = async (
-  req: Request<DeleteUserDto["params"]>,
-  res: Response
-) => {
-  const userId = req.params.id;
-  const user = await deleteUser(userId);
+export const deleteUserHandler = async (req: Request, res: Response) => {
+  const userId = req.user?.userId;
+  if (!userId) {
+    throw new UnauthenticatedError("Authentication failed");
+  }
 
+  const user = await deleteUser(userId);
   if (!user) {
     throw new NotFoundError(`User not found`);
   }

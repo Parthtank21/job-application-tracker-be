@@ -1,12 +1,10 @@
 import express, { IRouter } from "express";
 import {
-  createUserHandler,
   deleteUserHandler,
   getUserHandler,
   updateUserHandler,
 } from "./user.controllers";
 import {
-  validateCreateUser,
   validateDeleteUser,
   validateGetUser,
   validateUpdateUser,
@@ -14,9 +12,8 @@ import {
 
 const router: IRouter = express.Router();
 
-router.route("/").post(validateCreateUser, createUserHandler);
 router
-  .route("/:id")
+  .route("/")
   .get(validateGetUser, getUserHandler)
   .put(validateUpdateUser, updateUserHandler)
   .delete(validateDeleteUser, deleteUserHandler);

@@ -1,10 +1,12 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
+
 import { LoginUserDto } from "./auth.schema";
-import { verify } from "../../utils/hash.utils";
 import { createJWT } from "../../utils/jwt.utils";
 import sendResponse from "../../utils/api-response";
-import { getUserByEmail } from "../user/user.services";
+import { CreateUserDto } from "../user/user.schema";
+import { hash, verify } from "../../utils/hash.utils";
+import { createUser, getUserByEmail } from "../user/user.services";
 import { NotFoundError, UnauthenticatedError } from "../../errors";
 
 export const loginUserHandler = async (
@@ -26,7 +28,7 @@ export const loginUserHandler = async (
 
   const payload = {
     email: email,
-    user_id: user.id,
+    userId: user._id,
   };
 
   const accessToken = createJWT(payload);
@@ -41,5 +43,20 @@ export const loginUserHandler = async (
     statusCode: StatusCodes.OK,
     data: user,
     message: "User logged in successfully",
+  });
+};
+
+export const createUserHandler = async (
+  req: Request<{}, {}, CreateUserDto["body"]>,
+  res: Response
+) => {
+  const { password, ...rest } = req.body;
+  const hashedPassword = await hash(password, false);
+  const newUser = await createUser({ ...rest, password: hashedPassword });
+
+  sendResponse({
+    res,
+    statusCode: StatusCodes.CREATED,
+    message: "User registered successfully",
   });
 };

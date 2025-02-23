@@ -1,9 +1,10 @@
 import express, { IRouter } from "express";
-import { validateLoginUser } from "./auth.validators";
-import { loginUserHandler } from "./auth.controllers";
+import { createUserHandler, loginUserHandler } from "./auth.controllers";
+import { validateCreateUser, validateLoginUser } from "./auth.validators";
 
 const router: IRouter = express.Router();
 
 router.route("/login").post(validateLoginUser, loginUserHandler);
+router.route("/register").post(validateCreateUser, createUserHandler);
 
 export default router;
