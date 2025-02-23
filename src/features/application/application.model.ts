@@ -3,9 +3,10 @@ import mongoose from "mongoose";
 export interface ApplicationInput {
   userId: string;
   companyName: string;
-  appliedOn: string;
+  applicationDate: string;
   location: string;
   postUrl?: string;
+  platform: string;
   description?: string;
   role: string;
   mobile?: string;
@@ -35,11 +36,15 @@ const ApplicationSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    appliedOn: {
+    applicationDate: {
       type: String,
       required: true,
     },
     location: {
+      type: String,
+      required: true,
+    },
+    platform: {
       type: String,
       required: true,
     },

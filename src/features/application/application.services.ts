@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import Application, { ApplicationInput } from "./application.model";
 
 export const createApplication = async (input: ApplicationInput) => {
@@ -18,6 +19,7 @@ export const getSingleApplication = async (
     _id: applicationId,
     userId,
   }).lean();
+
   return application;
 };
 

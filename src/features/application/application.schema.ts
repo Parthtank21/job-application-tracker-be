@@ -8,8 +8,11 @@ const payload = {
       })
       .trim()
       .min(3, "Company name must be 3 characters long"),
-    appliedOn: z.string({
+    applicationDate: z.string({
       required_error: "Application date is required",
+    }),
+    platform: z.string({
+      required_error: "Platform is required",
     }),
     location: z
       .string({
@@ -42,7 +45,7 @@ const payload = {
 const params = {
   params: z.object({
     id: z.string({
-      required_error: "User Id is required",
+      required_error: "Application Id is required",
     }),
   }),
 };
